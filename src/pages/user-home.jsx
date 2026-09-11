@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import Nav from "../components/Nav";
-import SectionButtons from "../components/SectionButtons";
-import MembersTable from "../components/MembersTable";
-import { getMembers } from "../services/membersApi";
+import Nav from "../components/navbar";
+import SectionButtons from "../components/section-buttons";
+import MembersTable from "../components/members-table";
+import { getMembers } from "../services/members-api";
 
 export default function UserHome() {
   const [members, setMembers] = useState([]);

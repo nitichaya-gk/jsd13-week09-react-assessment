@@ -1,5 +1,5 @@
-import Nav from "../components/Nav";
-import SectionButtons from "../components/SectionButtons";
+import Nav from "../components/navbar";
+import SectionButtons from "../components/section-buttons";
 
 export default function Home() {
   return (
