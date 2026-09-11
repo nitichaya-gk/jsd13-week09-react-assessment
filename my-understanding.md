@@ -1,42 +1,46 @@
 ---------------------------------------------------------------------------
 Thinking Process
 ---------------------------------------------------------------------------
-1. วิเคราะห์หน้าเว็ปไซต์ก่อนว่าหน้าแต่ละหน้าเป็นยังไง 
+## 1. วิเคราะห์ mockup และ requirement ก่อนเริ่มเขียนโค้ด
+แยกองค์ประกอบหลัก
+- Navigation bar สำหรับไปหน้า Home และ Owner
+- หัวข้อของแต่ละหน้า
+- ปุ่มสลับระหว่าง User Home Section และ Admin Home Section
+- ตารางแสดงรายชื่อสมาชิก
+- ฟอร์มเพิ่มสมาชิก ซึ่งมีเฉพาะหน้า Admin
+- หน้า Owner ที่แสดงข้อมูลและรูปภาพของผู้พัฒนา
+วางแผน route อะไรบ้าง และส่วนไหนควรนำกลับมาใช้ซ้ำได้
+## 2. แยก UI ที่ใช้ซ้ำเป็น component
+ส่วนที่ซ้ำจะย้ายไปเป็น component ในโฟลเดอร์ `src/components` เพื่อให้แก้ไขครั้งเดียวแล้วทุกหน้าที่ใช้งานได้รับผลเหมือนกัน
+- `navbar.jsx` ใช้ในทุกหน้า จึงแยกเป็น component
+- `section-buttons.jsx` ใช้ในหน้า Home, User และ Admin จึงแยกเป็น component
+- `members-table.jsx` ใช้แสดงข้อมูลสมาชิกทั้งหน้า User และ Admin จึงแยกเป็น component
+- ฟอร์ม Create User ใช้เฉพาะหน้า Admin จึงเขียนไว้ใน `admin-home.jsx` โดยไม่จำเป็นต้องแยก component เพิ่ม
+## 3. วางตำแหน่ง state ให้เหมาะสม
+พิจารณาว่าข้อมูลแต่ละตัวถูกใช้งานที่ใดบ้าง ข้อมูล `members` ต้องถูกใช้ทั้งตารางและฟังก์ชันเพิ่ม/ลบสมาชิกในหน้า Admin ดังนั้นจึงเก็บ state นี้ไว้ที่ `AdminHome` ซึ่งเป็น parent ของทั้งฟอร์มและตาราง ไม่เก็บ state แยกไว้ใน `MembersTable`
+
+State ที่ใช้ในหน้า Admin คือ
+- `members` เก็บรายการสมาชิกจาก API เพื่อส่งไปแสดงในตาราง
+- `name` เก็บค่าช่องชื่อในฟอร์ม
+- `lastName` เก็บค่าช่องนามสกุลในฟอร์ม
+- `position` เก็บค่าช่องตำแหน่งงานในฟอร์ม
+เมื่อเพิ่มหรือลบสมาชิกสำเร็จ จะเรียก `loadMembers()` อีกครั้งเพื่อให้ state `members` เป็นข้อมูลล่าสุด ตารางจึงอัปเดตตามโดยอัตโนมัติ
+
+## 4. ออกแบบการส่งข้อมูลด้วย props
+React ส่งข้อมูลจาก parent ลงไป child ผ่าน props จึงส่ง `members` จากหน้า User หรือ Admin ไปยัง `MembersTable` เพื่อให้ตารางมีหน้าที่แค่แสดงข้อมูล 
+ส่วนเหตุการณ์จาก child กลับไป parent ใช้ callback function ตัวอย่างคือหน้า Admin ส่ง `handleDelete` เข้าไปใน prop `onDelete` ของ `MembersTable` เมื่อผู้ใช้กดปุ่ม Delete ตารางจะเรียก `onDelete(member.id)` และ parent จะเป็นผู้เรียก API เพื่อลบข้อมูลแล้วโหลดรายการใหม่
+สรุปทิศทางของข้อมูลคือ
+- Data: `AdminHome` หรือ `UserHome` >> `MembersTable`
+- Event: `MembersTable` >> `onDelete` >> `AdminHome`
+
+## 5. วางแผน API ตามหลัก CRUD
+- `getMembers()` ใช้ `GET` เพื่อดึงรายชื่อสมาชิก
+- `createMember()` ใช้ `POST` เพื่อเพิ่มสมาชิก
+- `deleteMember(id)` ใช้ `DELETE` เพื่อลบสมาชิกตาม id
+---------------------------------------------------------------------------------
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-- Explain how and why you divided the app’s UI into components, 
-Ans : 
-
-
-
-
-- What state variables did you created and why?
-Ans : 
-
-
-How did you manage these states? Was it via Passing Props or React Context, why? 
-Explain how and why you used the useEffect hook?
-Explain whether you could and why, you would use fetch() without using useEffect?
-Explain whether the use of fetch() should be synchronous or asynchronous JavaScript, why? 
-Include any other notes about React and Frontend Web Development you want to use to summarize your understanding of this technical domain . You can also note down questions you have.
+---------------------------------------------------------------------------------
+Instructor Question
+---------------------------------------------------------------------------------
